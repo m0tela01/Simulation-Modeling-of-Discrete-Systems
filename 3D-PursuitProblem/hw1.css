@@ -1,0 +1,63 @@
+
+body {
+    text-align: center;
+    background-image: url("big-red.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+button{
+    font-size: 18px;
+}
+
+h4 {
+    float: left;
+    width: 50%;
+    font-size: 20px;
+}
+
+
+.shipText > h2, h3 {   
+    float: left;
+    width: 50%;
+    color: gray;
+    font-size: 34px;
+}
+
+.shipText > h2 {   
+    float: left;
+    width: 50%;
+    color: white;
+}
+
+
+#simulationButton {
+    text-align: center;
+}
+
+#currentShipMove {
+    font-size: 25px;
+    text-emphasis: 2;
+    padding-left: 10px;
+    padding-right: 10px;
+    text-decoration: underline;
+    color: white;
+}
+
+#refresh {
+    padding-top: 15px;
+    margin-top: 10;
+}
+
+#totalMoves {
+    color: white;
+    font-size: 16px;
+}
+
+#questionText {
+    color: white;
+    font-style: italic;
+    width: 650px;
+    text-align: center;
+    display: inline-block;
+}
