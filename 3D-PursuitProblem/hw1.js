@@ -2,15 +2,16 @@ var iterator = 1;
 var coordinatess1 = [];
 var coordinatess2 = [];
 var continueSimulation = false;
-let playingField = [10, 10, 10]
+let axisLength = 10
+let playingField = [axisLength, axisLength, axisLength]
 
 // #region Initialize
 function getInitialCoordinates() {
     let resultShip1 = [];
     let resultShip2 = [];
     for (let i = 0; i < 3; i++) {
-        resultShip1[i] = Math.floor(Math.random() * 10) + 1;
-        resultShip2[i] = Math.floor(Math.random() * 10) + 1;
+        resultShip1[i] = Math.floor(Math.random() * axisLength) + 1;
+        resultShip2[i] = Math.floor(Math.random() * axisLength) + 1;
     }
     // if they are starting at the same place reset 
     if (resultShip1 === resultShip2) {
@@ -34,12 +35,28 @@ function showShipTurn() {
 }
 // #endregion
 
-function stringNumbersoIntArr(numbersAsString) {
-    let arrayInt = numbersAsString.split(",").map(x =>{
-        return parseInt(x, 10);
-    })
-    return arrayInt;
-}
+//# region Actual operations for simulation
+let currShipLocation1 = getInitialCoordinates()[0];
+let currShipLocation2 = getInitialCoordinates()[1];
+
+console.log(currShipLocation1);
+console.log(currShipLocation2);
+
+
+// Computing distance and angle functions
+c1 = computeCylindricalCoordinates(currShipLocation1);
+c2 = computeCylindricalCoordinates(currShipLocation2);
+
+c1
+c2
+
+d = computeDistance(c1,c2);
+d
+
+a = computeAngle(c1,c2);
+a
+// # endregion
+
 
 
 function generateRefreshButton(){
@@ -58,7 +75,7 @@ function getRandomCoordinates() {
     let result = [];
     let shipTurn = 0;
     for (let i = 0; i < 3; i++) {
-        result[i] = Math.floor(Math.random() * 10) + 1;
+        result[i] = Math.floor(Math.random() * axisLength) + 1;
     }
 
     if(iterator % 2 === 0) {

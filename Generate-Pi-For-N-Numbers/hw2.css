@@ -1,0 +1,16 @@
+
+body {
+    text-align: center;
+    background-image: url("big-red.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+
+#myCanvas {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
