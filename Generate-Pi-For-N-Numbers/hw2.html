@@ -3,16 +3,19 @@
     <head>
         <meta charset="UTF-8">
         <title>Michael Telahun Simulations HW 2</title>
-        <canvas id="myCanvas" width="600" height="600"></canvas>
+        <!-- <canvas id="myCanvas" width="600" height="600"></canvas> -->
         <link rel="stylesheet" type="text/css" href="hw2.css">
         <script src="jquery-3.4.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.3"></script>
         <script src="hw2.js" defer> </script>
     </head>
     <body>
         <h1></h1>
-        <button onclick="showPi()"; id="visualize">Visualize Pi!</button>
+        <button id="visualize">Visualize Pi!</button>
         <h2 id="nValue"></h2>
         <h3 id="nthNumber"></h3>
         <h1 id="calculatedPi"></h1>
+        <canvas id="myChart"></canvas>
     </body>
 </html>
