@@ -295,16 +295,16 @@ simulatedSpeed.onclick = function(){
 
 var chooseSimulation = document.getElementById("simulationChooser");
 chooseSimulation.onclick = function(){
-    if (startUpPi === false){
-        startUpPi = true;
+    if (startUpPi === true){
+        startUpPi = false;
         showPi();
         var pickedSimulation = document.getElementById("simulationChooser");
         pickedSimulation.innerHTML = "Go To Warehouse Simulation";
     }
     else{
-        startUpPi = false;
-        wareHouseStocking();
+        startUpPi = true;
+        // wareHouseStocking();
         var pickedSimulation = document.getElementById("simulationChooser");
-        chooseSimulation.innerHTML = "Go to Pi Simulation";
+        pickedSimulation.innerHTML = "Go to Pi Simulation";
     }
 }
