@@ -1,52 +1,58 @@
 let continueSimulation = false;
-let cX = 0;
-let cY = 0;
-let kthNumber = -1;
-let radius = 500;
 let sumOfN = 0;
-
-let digits = 100;
-let piFile = "";
 let values = [];
 let valueIndicies = [];
+let simulationSpeed = 300;
 
+// The chart element
 var myChart = document.getElementById('myChart').getContext('2d');
+
+// chart data and characteristics
 var piChart = {
     labels: valueIndicies,
+    xAxisID: "X axis",
     
     datasets: [{
         label: 'Value of Pi at N',
         backgroundColor: 'rgb(113, 238, 184)',
-        pointBorderWidth: 3,
-        pointHoverRadius: 5,
-        pointRadius: 3,
-        pointHitRadius: 4,
+        pointBorderWidth: 2,
+        pointHoverRadius: 3,
+        pointRadius: 2,
+        pointHitRadius: 3,
         borderColor: 'rgb(0,0,0)',
-        data: values
-      
+        data: values,
     },
     {
-        label: 'About Pi',
+        label: 'Pi From Math Library',
+        fill: false,
         backgroundColor: 'rgb(1, 1, 205)',
+        borderColor: 'rgb(1, 1, 205)',
         data: [Math.PI]
     }],
 };
+
+// chart options
 var piChartOptions = {
     responsive: true,
     showLines: true,
-    plugins: {
-        zoom: {
-              pan: {
-                  enabled: true,
-                  mode: 'xy'
-                  },
-              zoom: {
-                  enabled: true,
-                  mode: 'x'
-                  }
-               },
-            }
+    legend: {
+        reverse: true
+    },
+    // plugins: {
+    //     zoom: {
+    //           pan: {
+    //               enabled: true,
+    //               mode: 'xy'
+    //               },
+    //           zoom: {
+    //               enabled: true,
+    //               mode: 'x'
+    //               }
+    //            },
+    //         }
 };
+
+// chart annotations
 var piChartAnno = {
     annotations: [{
         type: 'line',
@@ -56,12 +62,13 @@ var piChartAnno = {
         borderColor: 'rgb(0,0,0)',
         borderWidth: 3.1,
         label: {
-          enabled: false,
+          enabled: true,
           content: 'This is about PI'
         }
       }]
 };
 
+// the instance of line chart
 var piLineChart = Chart.Line(myChart,{
 
     data: piChart,
@@ -81,28 +88,7 @@ let digitsOfPi = pi10000.split("").map(Number);
 
 let index = 0;
 function showPi(){
-    if (index === 0){
-        var nValue = document.getElementById("nValue");
-        nValue.innerHTML = "N = " + index.toString();
-
-        var caclulatedPi = document.getElementById("calculatedPi");
-        sumOfN += Math.pow((-1), index) / (2 * index + 1);
-        pi = 4 * sumOfN;
-        caclulatedPi.innerHTML = pi.toString();
-
-        valueIndicies.push(index);
-        values.push(pi);
-        // createChart(index, pi);
-        piLineChart.data.datasets[0].data[index] = pi;
-        piLineChart.data.labels[index] = index.toString();
-        
-        piLineChart.data.datasets[1].data[index] = Math.PI;
-        
-        
-        piLineChart.update();
-        piLineChart.render();
-    }
-    else{
+    if (index > -1){
         var nValue = document.getElementById("nValue");
         nValue.innerHTML = "N = " +index.toString();
 
@@ -111,8 +97,7 @@ function showPi(){
         pi = 4 * sumOfN;
 
         valueIndicies.push(index);
-        values.push(pi);
-        // createChart(index, pi);        
+        values.push(pi);   
         piLineChart.data.datasets[0].data[index] = pi;
         piLineChart.data.labels[index] = index.toString();
 
@@ -128,7 +113,7 @@ function showPi(){
     if(continueSimulation === true){
         setTimeout(function(){
             showPi(); 
-        },300);
+        },simulationSpeed);
     }    
 }
 
@@ -144,280 +129,20 @@ stopSimulation.onclick = function(){
         continueSimulation = false;
         var simulateButton = document.getElementById("visualize");
         simulateButton.innerHTML = "Continue Simulation";
-        piLineChart.annotation = piChartAnno;
     }
 }
 
-function createChart(index, value){
-    piChart.data.datasets[0].data[index] = value;
-    piChart.data.labels[index] = index.toString();
-    // var myChart = document.getElementById('myChart').getContext('2d');
-    // var chart = new Chart(myChart, {
-    //     // The type of chart we want to create
-    //     type: 'line',
-    
-    //     // The data for our dataset
 
-    //     // data: valuesOfPi,
-
-    //     data: {
-    //         labels: indices,
-    //             datasets: [{
-    //             label: 'Values of Pi',
-    //             backgroundColor: 'rgb(113, 238, 184)',
-    //             borderColor: 'rgb(255, 99, 132)',
-    //             data: values
-    //         }]
-    //     },
-    //     options: {}
-    // });
-}
-
-function generateChart(valueOfPi, index){
-    var myChart = document.getElementById('myChart').getContext('2d');
-    var chart = Chart.Line(myChart, {
-        // The type of chart we want to create
-        type: 'line',
-    
-        // The data for our dataset
-
-        // data: valuesOfPi,
-
-        data: {
-            labels: indices,
-                datasets: [{
-                label: 'Values of Pi',
-                backgroundColor: 'rgb(113, 238, 184)',
-                borderColor: 'rgb(255, 99, 132)',
-                data: valuesOfPi
-            }]
-        },
-        options: {}
-    });
-}
-
-function basicChar() {
-    var myChart = document.getElementById('myChart').getContext('2d');
-    var chart = new Chart(myChart, {
-        // The type of chart we want to create
-        type: 'line',
-    
-        // The data for our dataset
-        data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            datasets: [{
-                label: 'My First dataset',
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
-                data: [0, 10, 5, 2, 20, 30, 45]
-            }]
-        },
-    
-        // Configuration options go here
-        options: {}
-    });
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function visPi() {
-    var c = document.getElementById("myCanvas");
-    var ctx = c.getContext("2d");
-
-    // ctx.fillStyle = "#FFFFFF";
-    // ctx.fillRect(0, 0, 600, 600);
-    // ctx.clearRect(0, 0, 600, 600);
-
-    ctx.beginPath();
-    ctx.arc(300, 300, 40, 0, 2 * Math.PI);
-    ctx.stroke();
-    ctx.fillStyle = "#000000";
-
-    for (i = 0; i <= digits; i++){
-        ctx.moveTo(0, 0);
-        ctx.lineTo(200, 100);
-        ctx.stroke();
-    }
-}
-function visualizePi(x = 50) {
-    
-    if (kthNumber === -1) {
-        var canvas = document.getElementById("myCanvas");
-        var nValue = document.getElementById("nValue");
-        nValue.innerHTML = "Number of digits = " + x.toString();
-
-        var ctx = canvas.getContext("2d");
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillRect(0, 0, 600, 600);
-    
-        cX = canvas.width / 2;
-        cY = canvas.height / 2;
-    
+var simulatedSpeed = document.getElementById("speed");
+simulatedSpeed.onclick = function(){
+    if (simulationSpeed === 300){
+        simulationSpeed = 50;
+        var simulatedSpeed = document.getElementById("speed");
+        simulatedSpeed.innerHTML = "Back to normal";
     }
     else{
-        var nthNumber = document.getElementById("nthNumber");
-        nthNumber.innerHTML = "N = " + kthNumber.toString();
-        
-        var canvas = document.getElementById("myCanvas");
-        var ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, 600, 600);
-        ctx.beginPath();
-        sumOfN += Math.pow((-1), kthNumber) / (2 * kthNumber + 1);
-        pi = 4 * sumOfN;
-        ctx.arc(300, 300, radius, 0, 2 * 3.14);
-        ctx.stroke();
-        ctx.fillStyle = "#000000";
-    }
-    kthNumber++;
-    if (kthNumber <= x){
-        setTimeout(function(){
-            visualizePi(x); 
-        },600);
-    }
-  
-    // continueSimulation = true;
-    // var nValue = document.getElementById("nValue");
-    // nValue.innerHTML = "Number of digits = " + x.toString();
-    // var nthNumber = document.getElementById("nthNumber");
-    
-    // var canvas = document.getElementById("myCanvas");
-    // var ctx = canvas.getContext("2d");
-    // ctx.fillStyle = "#FFFFFF";
-    // ctx.fillRect(0, 0, 600, 600);
-
-    // cX = canvas.width / 2;
-    // cY = canvas.height / 2;
-
-    // let sumOfN = 0;
-
-
-    // draw(kthNumber, x, sumOfN); 
-
-    // // if (kthNumber <= x){
-    // //     setTimeout(function(){
-    // //         draw(kthNumber, x, sumOfN); 
-    // //     },1000);
-    // // }
-
-    // // for (k = 0; k <= x; k++) {
-    // //     nthNumber.innerHTML = "N = " + k.toString();
-    // //     sumOfN += Math.pow((-1), k) / (2 * k + 1);
-    // //     pi = 4 * sumOfN;
-    // //     // drawCircle(pi, radius, canvas);
-    // //     setTimeout(function(){
-    // //         drawCircle(pi, radius, canvas); 
-    // //     },1000);
-
-
-    // // }//4 * x
-    // // return "Done"
-    // console.log("done");
-
-}
-
-function draw(k, x, sumOfN){
-    if (k === -1) {
-        var nValue = document.getElementById("nValue");
-        nValue.innerHTML = "Number of digits = " + x.toString();
-        var nthNumber = document.getElementById("nthNumber");
-        
-        var canvas = document.getElementById("myCanvas");
-        var ctx = canvas.getContext("2d");
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillRect(0, 0, 600, 600);
-    
-        cX = canvas.width / 2;
-        cY = canvas.height / 2;
-    
-        let sumOfN = 0;
-    }
-    else{
-        nthNumber.innerHTML = "N = " + k.toString();
-        sumOfN += Math.pow((-1), k) / (2 * k + 1);
-        pi = 4 * sumOfN;
-        var ctx = canvas.getContext("2d");
-        ctx.beginPath();
-        ctx.arc(cX, cY, r, 0, 2 * pi);
-        ctx.stroke();
-        ctx.fillStyle = "#000000";
-    }
-    k++;
-    if (k <= x){
-        setTimeout(function(){
-            draw(k, x, sumOfN); 
-        },1000);
+        simulationSpeed = 300;
+        var simulatedSpeed = document.getElementById("speed");
+        simulatedSpeed.innerHTML = "Back to fast!";
     }
 }
-
-function drawCircle() {
-    let sumOfN = 0;
-    for (k = 0; k <= x; k++) {
-        nthNumber.innerHTML = "N = " + k.toString();
-        sumOfN += Math.pow((-1), k) / (2 * k + 1);
-        pi = 4 * sumOfN;
-        var ctx = canvas.getContext("2d");
-        ctx.beginPath();
-        ctx.arc(cX, cY, r, 0, 2 * pi);
-        ctx.stroke();
-        ctx.fillStyle = "#000000";
-    }
-
-}
-
-function drawCircle(pi, radius, canvas) {
-    var ctx = canvas.getContext("2d");
-    ctx.beginPath();
-    ctx.arc(cX, cY, radius, 0, 2 *pi);
-    ctx.stroke();
-    ctx.fillStyle = "#000000";
-
-}
-
-function drawSquare(radius) {
-    var c = document.getElementById("myCanvas");
-    var ctx = c.getContext("2d");
-    ctx.moveTo(0, 0);
-    ctx.lineTo(200, 100);
-    ctx.stroke();
-
-    
-}
-
-// var c = document.getElementById("myCanvas");
-// var ctx = c.getContext("2d");
-// // ctx.moveTo(0, 0);
-// // ctx.lineTo(200, 100);
-// // ctx.stroke();
-// ctx.fillStyle = "#FFFFFF";
-// ctx.fillRect(0, 0, 600, 600);
-
-
-// var c = document.getElementById("myCanvas");
-// var ctx = c.getContext("2d");
-// ctx.beginPath();
-// ctx.arc(300, 300, 40, 0, 2 * 4);
-// ctx.stroke();
-// ctx.fillStyle = "#00ee00";
-// ctx.clearRect(0, 0, 600, 600);
-
-// var c = document.getElementById("myCanvas");
-// var ctx = c.getContext("2d");
-// ctx.beginPath();
-// ctx.arc(300, 300, 40, 0, 2 * 2);
-// ctx.stroke();
-// ctx.fillStyle = "#00ee00";
-
-
