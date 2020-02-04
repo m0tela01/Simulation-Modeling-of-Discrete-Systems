@@ -12,4 +12,11 @@ body {
 
 #visualize , #speed {
     display:inline-block !important;
-    }
+}
+
+#bourbonText, #vodkaText {
+    /* display:inline-block !important; */
+    width: 50% !important;
+    float: left !important;
+    /* text-align: center !important; */
+}

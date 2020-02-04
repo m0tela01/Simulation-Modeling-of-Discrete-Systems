@@ -1,40 +1,58 @@
 let startUpPi = true;
 
+
+var asdf = [1,3,6,7,8];
+asdf
+
+
+
+if (startUpPi === true){
+    document.getElementById("warehouseSimulation").style.display = 'none';    //hide
+}
+
 let continueSimulation = false;
 let sumOfN = 0;
 let values = [];
 let valueIndicies = [];
 let simulationSpeed = 300;
-let warehouseSimulationSpeed = 500;
+let warehouseSimulationSpeed = 1500;
 
 
 
 var time = 0;
-var continueSimulationWarehouse = true;
+var continueSimulationWarehouse = false;
 var maxTimeInDay = 10;
 
 
 
-let bourbonStock = Math.floor(Math.random() * 30) + 31;
-let vodkaStock = Math.floor(Math.random() * 30) + 51;
+var bourbonStock = Math.floor(Math.random() * 30) + 31;
+var vodkaStock = Math.floor(Math.random() * 30) + 51;
 
-let bourbonMaxStock = bourbonStock;
-let vodkaMaxStock = vodkaStock;
+var bourbonMaxStock = bourbonStock;
+var vodkaMaxStock = vodkaStock;
 
-let replenishB = 0;
-let replenishV = 0;
+var replenishB = 0;
+var replenishV = 0;
 
-var currentSeedV = 0;
 var currentSeedB = 0;
+var currentSeedV = 0;
+
+var displayRequestB = true;
+var displayRequestV = true;
 
 
-function replenish(stockSeed, stock, replenishAmount){
+const variableToString = varObj => Object.keys(varObj)[0]
+
+
+function replenish(stockSeed, stock, maxStock, replenishAmount){
     // if there is a need to restock and its restocking day
     if (time % stockSeed === 0 && replenishAmount != 0){
         stockSeed = Math.floor(Math.random() * 4) + 1;   //change replenish time
-        amountToReplenish = totalAmount - stock;
-        stock += amountToReplenish
+        // amountToReplenish = maxStock - stock;
+        // stock += amountToReplenish
+        stock += replenishAmount
     }
+    return stock;
 
 }
 
@@ -50,41 +68,40 @@ function purchase(stock, maxAmount, replenishAmount, seed, type){
     //interesting because if you take 10% from remaining stock you limit customers
     //on the other hand a provider may want to have less on the shelf if low inventory
     else{
-        stock -= maxAmount * 0.1;    //remove 10% of stock to see the effect on random restocking days
+        stock -= (maxAmount * 0.1);    //remove 10% of stock to see the effect on random restocking days
     }
     //if stock is below 60% request a restock
     //a request could be made as soon as someone takes any stock which would be very conservative
     //however you cannot have over stock so it would depened if a tightly bounded
     //amount of purchases are made on an interval
     //but having a very low stock is a bad idea unless it doesnt sell and its a waste of $
-    if (stock < maxAmount * 0.6 && replenishAmount > 0){
-        replenishAmount = maxAmount - stock;
-        displayRequestInfo(stock, replenishAmount, seed, maxAmount, type)
+    if (stock < maxAmount * 0.6 ){//&& replenishAmount > 0){
+        replenishAmount = maxAmount - Math.ceil(stock);
+        // displayRequestInfo(stock, replenishAmount, seed, maxAmount, type)
     }
+    return [Math.ceil(stock), replenishAmount];
 }
 
 //display the data that is considered at the time of 
-function displayRequestInfo(stock, replenishAmount, stockSeed, maxAmount, type){
+function displayRequestInfo(stock, stockA, replenishAmount, replenishAmountA, stockSeed,
+    stockSeedA, maxAmount, type){
     // var stockAmount = document.getElementById(stock);
     // stockAmount.innerHTML = type + " Stock = " + stock.toString();
 
     var replenish = document.getElementById(replenishAmount);
-    replenish.innerHTML = "Request amount: " + replenishAmount.toString();
+    replenish.innerHTML = "Request amount: " + replenishAmountA.toString();
 
     var seedDayToReplenish = document.getElementById(stockSeed);
-    seedDayToReplenish.innerHTML = "Request time will take: " + stockSeed.toString();
+    seedDayToReplenish.innerHTML = "Request time currently could take up to: " + stockSeedA.toString() + " days.";
 
     var maxAmount = document.getElementById(maxAmount);
-    maxAmount.innerHTML = "New " + type + " stock will be " + (stock + replenishAmount).toString();
+    maxAmount.innerHTML = "New " + type + " stock will be " + (stockA + replenishAmountA).toString();
 }
 
 function editText(elementID, stringToDisplay){
     var element = document.getElementById(elementID);
     element.innerHTML = stringToDisplay;
 }
-
-
-
 
 function wareHouseStocking() {
     if (time > -1){
@@ -95,6 +112,8 @@ function wareHouseStocking() {
             currentSeedB = Math.floor(Math.random() * 4) + 1;
             currentSeedV = Math.floor(Math.random() * 4) + 1;
     
+            editText("maxBourbon", "Quantity cannot exceed: " + bourbonMaxStock.toString());
+            editText("maxVodka", "Quantity cannot exceed: " + vodkaMaxStock.toString());
             editText("bourbonStock", "Bourbon Stock = " + bourbonStock.toString());
             editText("vodkaStock", "Vodka Stock = " + vodkaStock.toString());
     
@@ -106,18 +125,56 @@ function wareHouseStocking() {
             //will result in a different outcome then at the end of day
             //it isnt a huge change since in the simulation everything is initialized
             //and carried out in a linear manner
-            replenish(currentSeedB, bourbonStock, 100);
-            replenish(currentSeedV, vodkaStock, 100);
-    
-    
+            
+            bourbonStock = replenish(currentSeedB, bourbonStock, bourbonMaxStock, replenishB);
+            vodkaStock = replenish(currentSeedV, vodkaStock, vodkaMaxStock, replenishV);
+
+
+            if (displayRequestB === false && bourbonStock === bourbonMaxStock){
+                replenishB = 0;
+                displayRequestB = true;
+                currentSeedB = Math.floor(Math.random() * 4) + 1;
+
+                editText("bourbonMaxStock", "")
+                editText("replenishB", "")
+                editText("currentSeedB", "Bouron has been restocked!")
+            }
+
+            if (displayRequestV === false && vodkaStock === vodkaMaxStock){
+                replenishV = 0;
+                displayRequestV = true;
+                currentSeedV = Math.floor(Math.random() * 4) + 1;
+
+                editText("vodkaMaxStock", "")
+                editText("replenishV", "")
+                editText("currentSeedV", "Vodka has been restocked!")
+            }
+
+        
+            //bourbon - perform purchase and display results for
             editText("bourbonStock", "Bourbon Stock = " + bourbonStock.toString());
-            purchase(bourbonStock, bourbonMaxStock, replenishB, currentSeedB, "Bourbon");
+            var bourbonPurchase = purchase(bourbonStock, bourbonMaxStock, replenishB, currentSeedB, "Bourbon");
+            bourbonStock = bourbonPurchase[0];
+            replenishB = bourbonPurchase[1];
+
+            if (replenishB > 0 && displayRequestB === true){
+                displayRequestInfo("bourbonStock", bourbonStock, "replenishB", replenishB,
+                 "currentSeedB", currentSeedB, "bourbonMaxStock", "Bourbon");
+                displayRequestB = false;
+            }
             
-            
+
+            //vodka - perform purchase and display results for
             editText("vodkaStock", "Vodka Stock = " + vodkaStock.toString());
-            purchase(vodkaStock, vodkaMaxStock, replenishV, currentSeedV, "Vodka");
-            
-            
+            var vodkaPurchase = purchase(vodkaStock, vodkaMaxStock, replenishV, currentSeedV, "Vodka");
+            vodkaStock = vodkaPurchase[0];
+            replenishV = vodkaPurchase[1];
+
+            if (replenishV > 0 && displayRequestV === true){
+                displayRequestInfo("vodkaStock", vodkaStock, "replenishV", replenishV,
+                 "currentSeedV", currentSeedV, "vodkaMaxStock", "Vodka");
+                displayRequestV = false;
+            }
         }
     
     
@@ -227,29 +284,51 @@ var piLineChart = Chart.Line(myChart,{
 
 
 let index = 0;
+let realIndex = 0;
+let firstPiIter = true;
+let refitOutputBy = 75;
 function showPi(){
     if (index > -1){
         var nValue = document.getElementById("nValue");
-        nValue.innerHTML = "N = " +index.toString();
+        nValue.innerHTML = "N = " + realIndex.toString();
 
         var caclulatedPi = document.getElementById("calculatedPi");
-        sumOfN += Math.pow((-1), index) / (2 * index + 1);
+        sumOfN += Math.pow((-1), realIndex) / (2 * realIndex + 1);
         pi = 4 * sumOfN;
 
-        valueIndicies.push(index);
+        valueIndicies.push(realIndex);
         values.push(pi);   
         piLineChart.data.datasets[0].data[index] = pi;
-        piLineChart.data.labels[index] = index.toString();
+        piLineChart.data.labels[index] = realIndex.toString();
 
         piLineChart.data.datasets[1].data[index] = Math.PI;
+
+        if (values.length > refitOutputBy){
+            piLineChart.data.datasets[0].data = piLineChart.data.datasets[0].data.slice(1).slice(refitOutputBy);
+            piLineChart.data.labels = piLineChart.data.labels.slice(1).slice(refitOutputBy);
+
+            values = values.slice(1).slice(refitOutputBy);
+            valueIndicies = valueIndicies.slice(1).slice(refitOutputBy);
+            index = 0;
+            
+            piLineChart.data = piChart;
+
+            if (firstPiIter === true){
+                refitOutputBy += 50;
+            }
+        }
+        
+
         piLineChart.update();
         piLineChart.render();
 
         caclulatedPi.innerHTML = pi.toString();
+
     }
 
 
     index++;
+    realIndex++;
     if(continueSimulation === true){
         setTimeout(function(){
             showPi(); 
@@ -288,8 +367,20 @@ simulatedSpeed.onclick = function(){
 }
 
 
-
-
+var stopWarehouse = document.getElementById("runWareHouse");
+stopWarehouse.onclick = function(){
+    if(continueSimulationWarehouse === false){
+        continueSimulationWarehouse = true;
+        wareHouseStocking();
+        var simulateWarehouse = document.getElementById("runWareHouse");
+        simulateWarehouse.innerHTML = "Pend Simulation";
+    }
+    else{
+        continueSimulationWarehouse = false;
+        var simulateWarehouse = document.getElementById("runWareHouse");
+        simulateWarehouse.innerHTML = "Continue Simulation";
+    }
+}
 
 
 
@@ -299,12 +390,18 @@ chooseSimulation.onclick = function(){
         startUpPi = false;
         showPi();
         var pickedSimulation = document.getElementById("simulationChooser");
-        pickedSimulation.innerHTML = "Go To Warehouse Simulation";
+        pickedSimulation.innerHTML = "Go to Pi Simulation";
+        document.getElementById("warehouseSimulation").style.display = 'block';    //show
+        document.getElementById("piSimulation").style.display = 'none';     //hide
+        
+        wareHouseStocking();
     }
     else{
         startUpPi = true;
-        // wareHouseStocking();
         var pickedSimulation = document.getElementById("simulationChooser");
-        pickedSimulation.innerHTML = "Go to Pi Simulation";
+        pickedSimulation.innerHTML = "Go To Warehouse Simulation";
+
+        document.getElementById("piSimulation").style.display = 'block';    //show
+        document.getElementById("warehouseSimulation").style.display = 'none';    //hide
     }
 }

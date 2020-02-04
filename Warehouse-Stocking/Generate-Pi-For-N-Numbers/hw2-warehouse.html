@@ -16,13 +16,38 @@
         <h5></h5>
         <button type="button" id="simulationChooser" class="btn btn-success">Go to Warehouse Simulation</button>
 
-        <h5></h5>
-        <button type="button" id="visualize" class="btn btn-success">Visualize Pi!</button>
-        <button type="button" id="speed" class="btn btn-success">Speed Up!</button>
+        <div id="warehouseSimulation">
+            <h5></h5>
+            <div>
+                <button type="button" id="runWareHouse" class="btn btn-success">Run Warehouse Simulation</button>
+            </div>
+            <div id="bourbonText">
+                <h2 id="maxBourbon"></h2>
+                <h3 id="bourbonStock">Bourbon Stock</h3>
+                <h4 id="bourbonMaxStock"></h4>
+                <h4 id="replenishB"></h4>
+                <h4 id="currentSeedB"></h4>
+            </div>
 
-        <h3 id="nValue"></h3>
-        <h3 id="nthNumber"></h3>
-        <h1 id="calculatedPi"></h1>
-        <canvas id="myChart"></canvas>
+            <div id="vodkaText">
+                <h2 id="maxVodka"></h2>
+                <h3 id="vodkaStock">Vodka Stock</h3>
+                <h4 id="vodkaMaxStock"></h4>
+                <h4 id="replenishV"></h4>
+                <h4 id="currentSeedV"></h4>
+            </div>
+
+        </div>
+        
+        <div id="piSimulation">
+            <h5></h5>
+            <button type="button" id="visualize" class="btn btn-success">Visualize Pi!</button>
+            <button type="button" id="speed" class="btn btn-success">Speed Up!</button>
+
+            <h3 id="nValue"></h3>
+            <h3 id="nthNumber"></h3>
+            <h1 id="calculatedPi"></h1>
+            <canvas id="myChart"></canvas>
+        </div>
     </body>
 </html>
