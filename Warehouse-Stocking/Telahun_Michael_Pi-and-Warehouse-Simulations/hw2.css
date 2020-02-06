@@ -1,0 +1,22 @@
+
+body {
+    text-align: center;
+    background-color: rgb(245, 245, 244);
+}
+
+#myChart{
+    height: 45em !important;
+    font-weight: 900 !important;
+    font-size: 18px !important;
+}
+
+#visualize , #speed {
+    display:inline-block !important;
+}
+
+#bourbonText, #vodkaText {
+    /* display:inline-block !important; */
+    width: 50% !important;
+    float: left !important;
+    /* text-align: center !important; */
+}

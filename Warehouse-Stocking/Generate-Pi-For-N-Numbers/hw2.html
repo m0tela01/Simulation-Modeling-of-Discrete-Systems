@@ -4,13 +4,13 @@
         <meta charset="UTF-8">
         <title>Michael Telahun Simulations HW 2</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="hw2-warehouse.css">
+        <link rel="stylesheet" type="text/css" href="hw2.css">
         <script src="jquery-3.4.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
         <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.3"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <script src="hw2-warehouse.js" defer> </script>
+        <script src="hw2.js" defer> </script>
     </head>
     <body>
         <h5></h5>
@@ -20,10 +20,16 @@
             <h5></h5>
             <div>
                 <button type="button" id="runWareHouse" class="btn btn-success">Run Warehouse Simulation</button>
+                <button type="button" id="speedWarehouse" class="btn btn-success">Slow Down!</button>
             </div>
+            <h3>This problem follows the assumptions that P1 << Q1 and P2 << Q2. Following that logic I also made the two stocks have different maximum stocks
+            I made it so the amount that can be purchased from P1 which is bourbon is also less than the amount that can be purchased for P2 which is Vodka.
+            This was to simulate one item with a higher rate of purchases. The restocking time is random for both. 
+            </h3>
             <div id="bourbonText">
                 <h2 id="maxBourbon"></h2>
                 <h3 id="bourbonStock">Bourbon Stock</h3>
+                <h4 id="purchasedAmountB"></h4>
                 <h4 id="bourbonMaxStock"></h4>
                 <h4 id="replenishB"></h4>
                 <h4 id="currentSeedB"></h4>
@@ -32,6 +38,7 @@
             <div id="vodkaText">
                 <h2 id="maxVodka"></h2>
                 <h3 id="vodkaStock">Vodka Stock</h3>
+                <h4 id="purchasedAmountV"></h4>
                 <h4 id="vodkaMaxStock"></h4>
                 <h4 id="replenishV"></h4>
                 <h4 id="currentSeedV"></h4>

@@ -1,10 +1,6 @@
 let startUpPi = true;
 
 
-var asdf = [1,3,6,7,8];
-asdf
-
-
 
 if (startUpPi === true){
     document.getElementById("warehouseSimulation").style.display = 'none';    //hide
@@ -26,7 +22,7 @@ var maxTimeInDay = 10;
 
 
 var bourbonStock = Math.floor(Math.random() * 30) + 31;
-var vodkaStock = Math.floor(Math.random() * 30) + 51;
+var vodkaStock = Math.floor(Math.random() * 30) + 61;
 
 var bourbonMaxStock = bourbonStock;
 var vodkaMaxStock = vodkaStock;
@@ -43,7 +39,7 @@ var displayRequestV = true;
 
 const variableToString = varObj => Object.keys(varObj)[0]
 
-
+//restocking function
 function replenish(stockSeed, stock, maxStock, replenishAmount){
     // if there is a need to restock and its restocking day
     if (time % stockSeed === 0 && replenishAmount != 0){
@@ -56,6 +52,7 @@ function replenish(stockSeed, stock, maxStock, replenishAmount){
 
 }
 
+//purchasing function 
 function purchase(stock, maxAmount, replenishAmount, seed, type){
     //if out of stock cant take from 0
     //alternatively we could place things on backorder
@@ -63,21 +60,40 @@ function purchase(stock, maxAmount, replenishAmount, seed, type){
     if (stock <= 0){
         //print that the stock cannot be negative 
         stock = 0;
+        if (type === "Bourbon"){
+            editText("bourbonStock", "made customer angry and lost purchase");
+        }
+        if (type === "Vodka"){
+            editText("vodkaStock", "made customer angry and lost purchase");
+        }
+
     }
     //otherwise remove 10% of starting stock from current stock as a purchase
     //interesting because if you take 10% from remaining stock you limit customers
     //on the other hand a provider may want to have less on the shelf if low inventory
     else{
-        stock -= (maxAmount * 0.1);    //remove 10% of stock to see the effect on random restocking days
+        if (type === "Bourbon"){
+            var remove = Math.floor(Math.random() * 3) / 10;
+            stock -= (maxAmount * remove);    //remove 0-20% of stock
+            editText("purchasedAmountB", "Purchased: " + (remove * 100).toString() +"% or " + Math.round(maxAmount * remove) +  " bourbon stock")
+        }
+        if (type === "Vodka"){
+            var remove = Math.floor(Math.random() * 5) / 10;
+            stock -= (maxAmount * remove);    //remove 0-40% of stock
+            editText("purchasedAmountV", "Purchased: " + (remove  * 100).toString() +"% or " + Math.round(maxAmount * remove) + " vodka stock")
+        }
     }
     //if stock is below 60% request a restock
     //a request could be made as soon as someone takes any stock which would be very conservative
     //however you cannot have over stock so it would depened if a tightly bounded
     //amount of purchases are made on an interval
     //but having a very low stock is a bad idea unless it doesnt sell and its a waste of $
-    if (stock < maxAmount * 0.6 ){//&& replenishAmount > 0){
+    if (stock < maxAmount * 0.6  && type === "Bourbon" && replenishAmount === 0){//&& replenishAmount > 0){
         replenishAmount = maxAmount - Math.ceil(stock);
         // displayRequestInfo(stock, replenishAmount, seed, maxAmount, type)
+    }
+    if (stock < maxAmount * 0.4 && type === "Vodka" && replenishAmount === 0){
+        replenishAmount = maxAmount - Math.ceil(stock);
     }
     return [Math.ceil(stock), replenishAmount];
 }
@@ -98,11 +114,15 @@ function displayRequestInfo(stock, stockA, replenishAmount, replenishAmountA, st
     maxAmount.innerHTML = "New " + type + " stock will be " + (stockA + replenishAmountA).toString();
 }
 
+
+//printer
 function editText(elementID, stringToDisplay){
     var element = document.getElementById(elementID);
     element.innerHTML = stringToDisplay;
 }
 
+
+//Stocking simulation function
 function wareHouseStocking() {
     if (time > -1){
         // initialize everything
@@ -130,7 +150,7 @@ function wareHouseStocking() {
             vodkaStock = replenish(currentSeedV, vodkaStock, vodkaMaxStock, replenishV);
 
 
-            if (displayRequestB === false && bourbonStock === bourbonMaxStock){
+            if (displayRequestB === false && replenishB > 0){
                 replenishB = 0;
                 displayRequestB = true;
                 currentSeedB = Math.floor(Math.random() * 4) + 1;
@@ -140,7 +160,7 @@ function wareHouseStocking() {
                 editText("currentSeedB", "Bouron has been restocked!")
             }
 
-            if (displayRequestV === false && vodkaStock === vodkaMaxStock){
+            if (displayRequestV === false && replenishV > 0){
                 replenishV = 0;
                 displayRequestV = true;
                 currentSeedV = Math.floor(Math.random() * 4) + 1;
@@ -201,9 +221,7 @@ function wareHouseStocking() {
 
 
 
-
-
-
+//Pi simulation
 
 
 
@@ -282,7 +300,7 @@ var piLineChart = Chart.Line(myChart,{
 
 
 
-
+//Pi simulation function
 let index = 0;
 let realIndex = 0;
 let firstPiIter = true;
@@ -336,6 +354,9 @@ function showPi(){
     }    
 }
 
+
+// buttons 
+
 var stopSimulation = document.getElementById("visualize");
 stopSimulation.onclick = function(){
     if (continueSimulation === false){
@@ -351,7 +372,6 @@ stopSimulation.onclick = function(){
     }
 }
 
-
 var simulatedSpeed = document.getElementById("speed");
 simulatedSpeed.onclick = function(){
     if (simulationSpeed === 300){
@@ -365,7 +385,6 @@ simulatedSpeed.onclick = function(){
         simulatedSpeed.innerHTML = "Back to fast!";
     }
 }
-
 
 var stopWarehouse = document.getElementById("runWareHouse");
 stopWarehouse.onclick = function(){
@@ -382,7 +401,19 @@ stopWarehouse.onclick = function(){
     }
 }
 
-
+var speedWarehouse = document.getElementById("speedWarehouse");
+speedWarehouse.onclick = function(){
+    if (warehouseSimulationSpeed === 1500){
+        warehouseSimulationSpeed = 3500;
+        var speedWarehouse = document.getElementById("speedWarehouse");
+        speedWarehouse.innerHTML = "Back to normal";
+    }
+    else{
+        warehouseSimulationSpeed = 1500;
+        var speedWarehouse = document.getElementById("speedWarehouse");
+        speedWarehouse.innerHTML = "Back to slow!";
+    }
+}
 
 var chooseSimulation = document.getElementById("simulationChooser");
 chooseSimulation.onclick = function(){
