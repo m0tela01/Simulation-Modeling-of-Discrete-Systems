@@ -1,9 +1,19 @@
-let startUpPi = true;
+import { runInNewContext } from "vm";
+
+let startUpTank = true;
 
 
 
-if (startUpPi === true){
+if (startUpTank === true){
     document.getElementById("warehouseSimulation").style.display = 'none';    //hide
+}
+
+
+//calculate volume of tank
+function calculateArea(area, height, fluidIn, fluidOut){
+    var newArea = 0;
+    newArea = (fluidIn - fluidOut) / height
+    area =  newArea;
 }
 
 let continueSimulation = false;
@@ -417,8 +427,8 @@ speedWarehouse.onclick = function(){
 
 var chooseSimulation = document.getElementById("simulationChooser");
 chooseSimulation.onclick = function(){
-    if (startUpPi === true){
-        startUpPi = false;
+    if (startUpTank === true){
+        startUpTank = false;
         showPi();
         var pickedSimulation = document.getElementById("simulationChooser");
         pickedSimulation.innerHTML = "Go to Pi Simulation";
@@ -428,7 +438,7 @@ chooseSimulation.onclick = function(){
         wareHouseStocking();
     }
     else{
-        startUpPi = true;
+        startUpTank = true;
         var pickedSimulation = document.getElementById("simulationChooser");
         pickedSimulation.innerHTML = "Go To Warehouse Simulation";
 

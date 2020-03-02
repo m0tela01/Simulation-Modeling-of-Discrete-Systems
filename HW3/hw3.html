@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Michael Telahun Simulations HW 3</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="hw3.css">
+        <script src="jquery-3.4.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.3"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="hw3.js" defer> </script>
+    </head>
+    <body>
+        <h5></h5>
+        <button type="button" id="simulationChooser" class="btn btn-success">Go to Warehouse Simulation</button>
+      
+        <div id="piSimulation">
+            <h5></h5>
+            <button type="button" id="visualize" class="btn btn-success">Do Fluid simulation!</button>
+            <button type="button" id="speed" class="btn btn-success">Slow Down!</button>
+
+            <h3>This problem follows The “coupled tank” problem is described as a set of two differential equations as follows: 
+            A1.(dh1/dt) = F1- F2
+            A2.(dh2/dt) = F2 - F0
+            Where; A is the area of the tank, h is the height of the fluid, and F is the rate of flow.
+            </h3>
+            <h1 id="deltaT"></h1>
+            <div id="tank1">
+                <h2 id="areaTank1"></h2>
+                <h2 id="heightTank1"></h2>
+                <h2 id="flow1"></h2>
+            </div>
+
+            <div id="tank2">
+                <h2 id="areaTank2"></h2>
+                <h2 id="heightTank2"></h2>
+                <h2 id="flow2"></h2>
+            </div>
+            <div id="flowOut">
+                <h2 id="flow3"></h2>
+            </div>
+
+        </div>
+    </body>
+</html>
