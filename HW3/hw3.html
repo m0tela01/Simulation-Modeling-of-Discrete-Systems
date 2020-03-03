@@ -14,26 +14,30 @@
     </head>
     <body>
         <h5></h5>
-        <button type="button" id="simulationChooser" class="btn btn-success">Go to Warehouse Simulation</button>
+        <button type="button" id="simulationChooser" class="btn btn-success">Go to Triangle Simulation</button>
+        <button type="button" id="hrChooser" class="btn btn-success">Go to HR Simulation</button>
+        <button type="button" id="softwareChooser" class="btn btn-success">Go to Software Simulation</button>
       
-        <div id="piSimulation">
+        <div id="tankSimulation">
             <h5></h5>
             <button type="button" id="visualize" class="btn btn-success">Do Fluid simulation!</button>
             <button type="button" id="speed" class="btn btn-success">Slow Down!</button>
 
             <h3>This problem follows The “coupled tank” problem is described as a set of two differential equations as follows: 
-            A1.(dh1/dt) = F1- F2
-            A2.(dh2/dt) = F2 - F0
+            A1(dh1/dt) = F1- F2 and 
+            A2(dh2/dt) = F2 - F0
             Where; A is the area of the tank, h is the height of the fluid, and F is the rate of flow.
             </h3>
             <h1 id="deltaT"></h1>
             <div id="tank1">
+                <h1 id="tankName1"></h1>
                 <h2 id="areaTank1"></h2>
                 <h2 id="heightTank1"></h2>
                 <h2 id="flow1"></h2>
             </div>
 
             <div id="tank2">
+                <h1 id="tankName2"></h1>
                 <h2 id="areaTank2"></h2>
                 <h2 id="heightTank2"></h2>
                 <h2 id="flow2"></h2>
@@ -41,7 +45,49 @@
             <div id="flowOut">
                 <h2 id="flow3"></h2>
             </div>
-
+            <div id="outputReport">
+                <h3 id="report1"></h3>
+                <h3 id="report2"></h3>
+            </div>
         </div>
+
+        <div id="triangleSimulation">
+            <!-- <canvas id="mycanvas"></canvas> -->
+            <h1> Work was done in python because of library issues in JavaScript. Please see the report.</h1>
+        </div>
+
+        <div id="hrSimulation">
+            <h3>This problem is as follows: In an interview, a human resource (HR) specialist asks candidates 20 questions with 5
+                possible multiple choice answers to each question. What is the probability of the following
+                candidates for success given the following assumptions:
+            </h3>
+            <button type="button" id="visualizeHr" class="btn btn-success">Do HR simulation!</button>
+            <h1>Test Type (1)</h1>
+            <h2 id="test"></h2>
+            <h3 id="testResult"></h3>
+            <h3 id="finalGrade"></h3>
+            <h1>Test Type (2)</h1>
+            <h2 id="test2"></h2>
+            <h3 id="testResult2"></h3>
+            <h3 id="finalGrade2"></h3>
+        </div>
+
+        <div id="softwareSimulation">
+            <h3>This problem is as follows: A software process is represented as a network with some process time between nodes
+                having Uniform distribution (U) and others with Deterministic values.
+            </h3>
+            <img src="graph.png">
+            <br></br>
+            <button type="button" id="visualizeSoft" class="btn btn-success">Do Software simulation!</button>
+            <h1 id="softTest"></h1>
+            <h3 id="softResult"></h3>
+            <h2 id="softOutcome1"></h2>
+            <h2 id="softOutcome2"></h2>
+            <h2 id="softOutcome3"></h2>
+            <h2 id="softOutcome4"></h2>
+            <h2 id="softOutcome5"></h2>
+            <h2 id="softOutcomeF"></h2>
+        </div>
+
     </body>
 </html>
