@@ -336,7 +336,7 @@ function findCritical(){
     // we could mention which one was shorter for the best
     // we could also find which has a backup as far as additional routes if busy
     outcome.push(Math.min(...outcome));
-    outcome.push(outcome.indexOf(Math.min(...outcome)) + 1);
+    outcome.push(outcome.indexOf(Math.min(...outcome)) - 4);
 
     return outcome;
 }
