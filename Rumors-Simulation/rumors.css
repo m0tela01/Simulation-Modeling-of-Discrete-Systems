@@ -1,0 +1,39 @@
+
+body {
+    text-align: center;
+    background-color: rgb(245, 245, 244);
+}
+
+#myChart{
+    height: 45em !important;
+    font-weight: 900 !important;
+    font-size: 18px !important;
+}
+
+#visualize , #speed {
+    display:inline-block !important;
+}
+
+#afterN , #percentN {
+    display:inline-block !important;
+    margin-right: 2cm;
+}
+
+#tank1, #tank2 {
+    /* display:inline-block !important; */
+    width: 50% !important;
+    float: left !important;
+    /* text-align: center !important; */
+}
+
+#areaTank1, #areaTank2 {
+    color: seagreen;
+}
+
+#heightTank1, #heightTank2 {
+    color: chocolate;
+}
+
+#flow1, #flow2, #flow3 {
+    color: blueviolet;
+}
