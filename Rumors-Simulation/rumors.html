@@ -25,20 +25,25 @@
             <input type="text" id="rumorersCount" value="1000">
             <br></br>
             <label id="nMinText"></label>
-            <input type="text" id="Nminutes" value="15">
+            <input type="text" id="Nminutes" value="10">
             <br></br>
             
             <button type="button" id="visualize" class="btn btn-success">Run Rumors Simulation!</button>
             <button type="button" id="speed" class="btn btn-success">Slow Down!</button>
             <button type="button" id="reloadPage" class="btn btn-success">Refreseh</button>
+            <button type="button" id="choosePlotter" class="btn btn-success">Switch to Bar Plot</button>
+
             <h1 id="rumorsCount"></h1>
             <div id="textDiv">
                 <h3 id="afterN"></h2>
                 <h3 id="percentN"></h2>
 
                 <div id="barPlotDiv">
-                    <!-- style="height: 300px; width: 100%; -->
                     <canvas id="myChart"></canvas>
+                </div>
+
+                <div id="splinePlotDiv">
+                    <canvas id="myChart2"></canvas>
                 </div>
             </div>
         </div>

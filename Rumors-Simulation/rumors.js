@@ -137,7 +137,7 @@ function editText(elementID, stringToDisplay){
 let startUp = true;
 let storyText = "N students are at a party (N is an even integer 2 ≤ N ≤ 10,000). At some point, all students pair off at random and talk for exactly one minute. At the end of the minute, all students again pair off with another person at random. One student wants to start a rumor. He spreads the rumor to his conversation partner at noon. Every person who has knowledge of the rumor obeys these rules: (1). The likelihood of spreading a rumor to another person is 0.5. (2). After a person has heard the rumor 2 times, he/she will assume everyone has heard the rumor and will no longer try to spread it further."
 let minutes = -1;
-let simulationSpeed = 100;
+let simulationSpeed = 0;
 let continueSimulation = false;
 
 let simulationDuration = 0;
@@ -145,6 +145,17 @@ let numberOfPeople = 0;
 
 let pairedPartyAnimals = [];
 var plotValues = [0, 0, 0, 0];
+
+var plotValues1 = [{ label: "0", y: 0 }];
+var plotValues2 = [{ label: "0", y: 0 }];
+var plotValues3 = [{ label: "0", y: 0 }];
+var plotValues4 = [{ label: "0", y: 0 }];
+
+
+function setDataPointsSpline(arr, time, newPoint){
+    arr.push({label: time.toString(), y: newPoint})
+}
+
 
 // The chart element
 var myChart = document.getElementById('myChart').getContext('2d');
@@ -180,6 +191,58 @@ barchart.render();
 
 
 
+var splinechart = new CanvasJS.Chart("splinePlotDiv", {
+	theme:"light2",
+	animationEnabled: true,
+	title:{
+		text: "People Spreading Rumors at a Party"
+    },
+    axisX :{
+        title: "Number of Minutes Elapsed"
+    },
+	axisY :{
+		// includeZero: false,
+		title: "Number of People",
+	},
+	toolTip: {
+		shared: "true"
+	},
+	legend:{
+		cursor:"pointer",
+		// itemclick : toggleDataSeries
+	},
+	data: [{
+		type: "spline",
+		visible: true,
+		showInLegend: true,
+		name: "Has Not Heard Rumor",
+		dataPoints: plotValues1
+	},
+	{
+		type: "spline", 
+		visible: true,
+		showInLegend: true,
+		name: "Heard Rumor",
+		dataPoints: plotValues2
+	},
+	{
+		type: "spline",
+		visible: true,
+		showInLegend: true,
+		name: "Heard Rumor (1)",
+		dataPoints: plotValues3
+	},
+	{
+		type: "spline", 
+		showInLegend: true,
+		name: "Heard Rumor (2)",
+		dataPoints: plotValues4
+	}]
+});
+splinechart.render();
+
+
+
 function doRumorsSimulation(){
     if (minutes < 1){
         if (startUp === true){
@@ -208,7 +271,28 @@ function doRumorsSimulation(){
             ]
             barchart.options.data[0].dataPoints = newdataPoints;
             // chart.update();
-            barchart.render();
+            if (isBarPlot){
+                barchart.render();
+            }
+            else{
+                //need to reset because there has to be something to render initially
+                plotValues1 = [];
+                plotValues2 = [];
+                plotValues3 = [];
+                plotValues4 = [];
+
+                setDataPointsSpline(plotValues1, minutes.toString(), plotValues[0]);
+                setDataPointsSpline(plotValues2, minutes.toString(), plotValues[1]);
+                setDataPointsSpline(plotValues3, minutes.toString(), plotValues[2]);
+                setDataPointsSpline(plotValues4, minutes.toString(), plotValues[3]);
+                
+                splinechart.options.data[0].dataPoints = plotValues1;
+                splinechart.options.data[1].dataPoints = plotValues2;
+                splinechart.options.data[2].dataPoints = plotValues3;
+                splinechart.options.data[3].dataPoints = plotValues4;
+                
+                splinechart.render();
+            }
         }
     }
     else{
@@ -221,8 +305,10 @@ function doRumorsSimulation(){
             let heardOnce = pairedPartyAnimals.filter(person => person.rumorsHeard === 1).length;
             let heardTwice = pairedPartyAnimals.filter(person => person.rumorsHeard === 2).length;
             
+            
+
             editText("afterN", "Number of minutes elapsed: " + (minutes + 1).toString());
-            editText("percentN", "Heard Rumor Population : " + rounder(heard/numberOfPeople*10).toString() + "%");
+            editText("percentN", "Heard Rumor Population : " + rounder((heard+1)/(numberOfPeople)*10).toString() + "%");
 
             plotValues = [];
 
@@ -239,7 +325,23 @@ function doRumorsSimulation(){
             ]
             barchart.options.data[0].dataPoints = newdataPoints;
             // chart.update();
-            barchart.render();
+            if (isBarPlot){
+                barchart.render();
+            }
+            else{
+                setDataPointsSpline(plotValues1, minutes.toString(), plotValues[0]);
+                setDataPointsSpline(plotValues2, minutes.toString(), plotValues[1]);
+                setDataPointsSpline(plotValues3, minutes.toString(), plotValues[2]);
+                setDataPointsSpline(plotValues4, minutes.toString(), plotValues[3]);
+                
+                splinechart.options.data[0].dataPoints = plotValues1;
+                splinechart.options.data[1].dataPoints = plotValues2;
+                splinechart.options.data[2].dataPoints = plotValues3;
+                splinechart.options.data[3].dataPoints = plotValues4;
+                
+                splinechart.render();                
+            }
+
         }
         else{
             continueSimulation = false;
@@ -276,17 +378,47 @@ stopSimulation.onclick = function(){
 //change simulation speed
 var simulatedSpeed = document.getElementById("speed");
 simulatedSpeed.onclick = function(){
-    if (simulationSpeed === 100){
+    if (simulationSpeed === 0){
         simulationSpeed = 1000;
         var simulatedSpeed = document.getElementById("speed");
         simulatedSpeed.innerHTML = "Back to normal";
     }
     else{
-        simulationSpeed = 100;
+        simulationSpeed = 0;
         var simulatedSpeed = document.getElementById("speed");
         simulatedSpeed.innerHTML = "Back to slow!";
     }
 }
+
+var isBarPlot = false;
+//change simulation plotter
+var simulatedPlotter = document.getElementById("choosePlotter");
+simulatedPlotter.onclick = function(){
+    if (isBarPlot === false){
+        isBarPlot = true;
+        var simulatedPlotter = document.getElementById("choosePlotter");
+        simulatedPlotter.innerHTML = "Back to Line Chart";
+
+        document.getElementById("barPlotDiv").style.display = 'block';    //show
+
+        document.getElementById("splinePlotDiv").style.display = 'none';    //hide
+        barchart = barchart;
+        barchart.render();
+    }
+    else{
+        isBarPlot = false;
+        var simulatedPlotter = document.getElementById("choosePlotter");
+        simulatedPlotter.innerHTML = "Back to Bar Chart";
+
+        document.getElementById("splinePlotDiv").style.display = 'block';    //show
+
+        document.getElementById("barPlotDiv").style.display = 'none';    //hide
+        splinechart = splinechart;
+        splinechart.render();
+    }
+}
+
+
 
 //referesh page
 var resetPage = document.getElementById("reloadPage");
