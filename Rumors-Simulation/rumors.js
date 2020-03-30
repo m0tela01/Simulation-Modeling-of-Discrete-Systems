@@ -28,15 +28,15 @@ function randomInterval(min, max) {
 // ensure we have an acceptable number of people
 function getPartyPeople(count){
     // let count = Math.floor(Math.random() * 10000);
-    if (count > 10000){
-        count = 10000;
-    }
+    // if (count > 10000){
+    //     count = 10000;
+    // }
     if (count % 2 === 0){
-        count += 1;
+        count -= 1;
     }
-    if (count < 2){
-        count = 2;
-    }
+    // if (count < 2){
+    //     count = 2;
+    // }
     return count;
 }
 
@@ -308,7 +308,7 @@ function doRumorsSimulation(){
             
 
             editText("afterN", "Number of minutes elapsed: " + (minutes + 1).toString());
-            editText("percentN", "Heard Rumor Population : " + rounder((heard+1)/(numberOfPeople)*10).toString() + "%");
+            editText("percentN", "Heard Rumor Population : " + rounder((heard+1)/(numberOfPeople)*100).toString() + "%");
 
             plotValues = [];
 
