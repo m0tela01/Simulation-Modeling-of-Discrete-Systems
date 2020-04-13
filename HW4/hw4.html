@@ -15,10 +15,31 @@
         <script src="hw4.js" defer> </script>
     </head>
     <body>
+        <!-- <button type="button"  id="runSimulation" class="btn btn-success">Show Queuing Simulation</button> -->
+        <h2 id="mainText1">I just plotted the numbers from the given table for the visualization of the bins. The 
+            Chi-Square test is in my report.
+        </h2>
+
+        <h2 id="mainText2">There was a bit of an issue with the plotting that makes the Current Response time hard to see in this graph. 
+            It directly overlaps with the Current Departure time. You can see it if you hover directly over the red peaks.
+            The total time is 550 to complete the serving in this system.
+        </h2>
+
+        <h2 id="mainText3">Here is the plot for two servers. The difference can be seen only when arrival times occur at same time
+            someone is being served.
+        </h2>
+
+        <button type="button" id="choosePlotter" class="btn btn-success">Show Queueing Simulation</button>
+
         <h2></h2>
         <div id = "splineDiv">
             <canvas id="splineChart"></canvas>
         </div>
+
+        <div id = "splineDiv2">
+            <canvas id="splineChart2"></canvas>
+        </div>
+
         <h2></h2>
         <div id="histDiv">
             <canvas id="histChart"></canvas>

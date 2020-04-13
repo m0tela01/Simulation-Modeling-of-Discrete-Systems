@@ -4,6 +4,10 @@ body {
     background-color: rgb(245, 245, 244);
 }
 
+#mainText{
+    color: black !important;
+}
+
 #myChart{
     height: 45em !important;
     font-weight: 900 !important;

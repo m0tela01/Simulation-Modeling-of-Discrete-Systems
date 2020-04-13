@@ -77,9 +77,9 @@ function sumOfTestStatistic(data, samplespace){
     return xSquared;
 }
 
-
-var xSquared = sumOfTestStatistic(bins, 20);
+var xSquared = sumOfTestStatistic(bins, samplespace=20);
 xSquared
+
 var degrees = 9;
 var alpha = 0.05;
 var chiSquaredValue = 16.9;
@@ -153,14 +153,14 @@ var splinechart = new CanvasJS.Chart("splineDiv", {
 		type: "spline", 
 		visible: true,
 		showInLegend: true,
-		name: "Current Response Time",
+		name: "Current Departure Time",
 		dataPoints: responseTime
 	},
 	{
 		type: "spline",
 		visible: true,
 		showInLegend: true,
-		name: "Current Departure Time",
+		name: "Current Response Time",
 		dataPoints: departureTime
 	},
 	{
@@ -174,7 +174,7 @@ var splinechart = new CanvasJS.Chart("splineDiv", {
 splinechart.render();
 
 
-function serveCustomer(server, arrivalTime, serviceTime, waitingTimes, responseTime, departureTime, time){
+function serveCustomer(arrivalTime, serviceTime, waitingTimes, responseTime, departureTime, time){
     var customerBeingServed = 0;
     
     var timer = 0;
@@ -258,25 +258,251 @@ function serveCustomer(server, arrivalTime, serviceTime, waitingTimes, responseT
         timer += 1;
         time.push({label: timer.toString(), y: timer})
         splinechart.options.data[0].dataPoints = waitingTimes;
-        splinechart.options.data[1].dataPoints = responseTime;
-        splinechart.options.data[2].dataPoints = departureTime;
+        splinechart.options.data[1].dataPoints = departureTime;
+        splinechart.options.data[2].dataPoints = responseTime;
         splinechart.options.data[3].dataPoints = time;
         splinechart.render();
     }
-    // if(servedList.length < numberOfCustomers){
-    //     setTimeout(function(){
-    //         serveCustomer();
-    //     },300);
-    // }  
-    // return timer;
+    console.log("Time unutilized with one servers: " + timeUnutilized);
 }
 
 var departureTime = [{ label: "0", y: 0 }];
 var waitingTimes = [{ label: "0", y: 0 }];
 
-serveCustomer(availableServers, arrivalTime, serviceTime, waitingTimes, responseTime, departureTime, time)
+serveCustomer(arrivalTime, serviceTime, waitingTimes, responseTime, departureTime, time)
 
-console.log(a)
+
+
+
+
+var responseTime2 = [{ label: "0", y: 0 }];//time to wait
+var departureTime2 = [{ label: "0", y: 0 }];
+var waitingTimes2 = [{ label: "0", y: 0 }];
+var waitingTimes22 = [{ label: "0", y: 0 }];
+var time2 = [{ label: "0", y: 0 }];
+
+var splinechart2 = new CanvasJS.Chart("splineDiv2", {
+	theme:"light2",
+	animationEnabled: true,
+	title:{
+		text: "Customers Being Served at a Resturant"
+    },
+    axisX :{
+        title: "Number of Minutes Elapsed"
+    },
+	axisY :{
+		// includeZero: false,
+		title: "Time",
+	},
+	toolTip: {
+		shared: "true"
+	},
+	legend:{
+		cursor:"pointer",
+		// itemclick : toggleDataSeries
+	},
+	data: [{
+		type: "spline",
+		visible: true,
+		showInLegend: true,
+		name: "Server 1 Waiting Time",
+		dataPoints: waitingTimes2
+	},
+	{
+		type: "spline", 
+		visible: true,
+		showInLegend: true,
+		name: "Current Departure Time",
+		dataPoints: responseTime2
+	},
+	{
+		type: "spline",
+		visible: true,
+		showInLegend: true,
+		name: "Current Response Time",
+		dataPoints: departureTime2
+	},
+	{
+		type: "spline",
+		visible: true,
+		showInLegend: true,
+		name: "time",
+		dataPoints: time2
+	},
+	{
+		type: "spline",
+		visible: true,
+		showInLegend: true,
+		name: "Server 2 Waiting Time",
+		dataPoints: waitingTimes22
+	}]
+});
+splinechart2.render();
+
+
+function serveCustomer2(arrivalTime, serviceTime, waitingTimes2, waitingTimes22, responseTime2, departureTime2, time2){
+    var customerBeingServed = 0;
+    var customerBeingServed2 = 0;
+    
+    var timer = 0;
+    var waitingSerivceTimes = [];
+    var servedList = [];
+    var numberOfCustomers = arrivalTime.length;
+
+    var waitTime = 0;
+    var waitTime2 = 0;
+    var timeUnutilized = 0;
+    while (servedList.length < numberOfCustomers){
+        if (timer === arrivalTime[0]){
+            var arrival = arrivalTime.shift();
+            var service = serviceTime.shift();
+            if (waitTime === 0){        // if the queue is empty
+                if (waitingSerivceTimes.length > 1){
+                    //if you arrive at the same time someone finished and theres people in the queue you go to the end
+                    waitingSerivceTimes.push(service);
+                    // now make the first person waiting get service
+                    var newCustomerTime = waitingSerivceTimes.shift();
+                    waitTime += newCustomerTime;
+                    waitingTimes2.push({ label: waitTime.toString(), y: waitTime});
+                    if (customerBeingServed != 0){
+                        servedList.push(customerBeingServed);
+                    }
+                    customerBeingServed = newCustomerTime;
+                }
+                else{
+                    var depTime = waitTime + service + timer;
+                    waitTime += service
+                    responseTime2.push({ label: waitTime.toString(), y: waitTime});
+                    departureTime2.push({ label: depTime.toString(), y: depTime});
+                    waitingTimes2.push({ label: waitTime.toString(), y: waitTime});
+                    if (customerBeingServed != 0){
+                        servedList.push(customerBeingServed);
+                    }
+                    customerBeingServed = service;
+                }
+            }
+            else{   //can not immediately process need to process for one time to be included
+                waitTime -= 1;
+                waitingTimes2.push({ label: waitTime.toString(), y: waitTime});
+                // if you arrive and its not time to be served you are in a queue
+                waitingSerivceTimes.push(service);
+                responseTime2.push({ label: waitTime.toString(), y: waitTime});
+                var depTime = waitTime + service + timer;
+                departureTime2.push({ label: depTime.toString(), y: depTime});
+            }
+            if (waitTime2 === 0 && waitTime > 0){        // if the queue is empty
+                if (waitingSerivceTimes.length > 1){
+                    //if you arrive at the same time someone finished and theres people in the queue you go to the end
+                    waitingSerivceTimes.push(service);
+                    // now make the first person waiting get service
+                    var newCustomerTime = waitingSerivceTimes.shift();
+                    waitTime2 += newCustomerTime;
+                    waitingTimes2.push({ label: waitTime2.toString(), y: waitTime2});
+                    if (customerBeingServed2 != 0){
+                        servedList.push(customerBeingServed2);
+                    }
+                    customerBeingServed2 = newCustomerTime;
+                }
+                if (waitingSerivceTimes.length === 1){
+                    var depTime = waitTime2 + service + timer;
+                    waitTime2 += service
+                    responseTime2.push({ label: waitTime2.toString(), y: waitTime2});
+                    departureTime2.push({ label: depTime.toString(), y: depTime});
+                    waitingTimes22.push({ label: waitTime2.toString(), y: waitTime2});
+                    if (customerBeingServed2 != 0){
+                        servedList.push(customerBeingServed2);
+                    }
+                    customerBeingServed2 = service;
+                }
+            }
+            if (waitTime2 > 0){   //can not immediately process need to process for one time to be included
+                waitTime2 -= 1;
+                var depTime = waitTime + service + timer;
+                waitingTimes22.push({ label: waitTime2.toString(), y: waitTime2});
+                // if you arrive and its not time to be served you are in a queue
+                // waitingSerivceTimes.push(service);
+                responseTime2.push({ label: waitTime2.toString(), y: waitTime2});
+                departureTime2.push({ label: depTime.toString(), y: depTime});
+            }
+        }
+        else{
+            if (waitTime != 0){
+                waitTime -= 1;
+                waitingTimes2.push({ label: waitTime.toString(), y: waitTime});
+            }
+            // if no one is getting served and someone is queue serve them
+            if (waitTime === 0 && waitingSerivceTimes.length > 0){
+                var newCustomerTime = waitingSerivceTimes.shift();
+                waitTime += newCustomerTime;
+                waitingTimes2.push({ label: waitTime.toString(), y: waitTime});
+                if (customerBeingServed != 0){
+                    servedList.push(customerBeingServed);
+                }
+                customerBeingServed = newCustomerTime;
+            }
+            if (waitTime === 0 && servedList.length === numberOfCustomers - 1){
+                servedList.push(customerBeingServed);
+            }
+
+            if (waitTime2 != 0){
+                waitTime2 -= 1;
+                waitingTimes22.push({ label: waitTime2.toString(), y: waitTime2});
+            }
+            // if no one is getting served and someone is queue serve them
+            if (waitTime2 === 0 && waitingSerivceTimes.length > 0){
+                var newCustomerTime = waitingSerivceTimes.shift();
+                waitTime2 += newCustomerTime;
+                waitingTimes22.push({ label: waitTime2.toString(), y: waitTime2});
+                if (customerBeingServed2 != 0){
+                    servedList.push(customerBeingServed2);
+                }
+                customerBeingServed2 = newCustomerTime;
+            }
+            if (waitTime2 === 0 && servedList.length === numberOfCustomers - 1){
+                servedList.push(customerBeingServed2);
+            }
+        }
+
+        if (waitTime === 0 || waitTime2 === 0){
+            timeUnutilized += 1;
+        }
+        if (waitingTimes2.length < time){
+            waitingTimes2.push({ label: timer.toString(), y: 0})
+        }
+        if (waitingTimes22.length < time){
+            waitingTimes22.push({ label: timer.toString(), y: 0})
+        }
+
+        if (responseTime2.length < timer){
+            responseTime2.push({ label: timer.toString(), y: 0})
+        }
+        // if (responseTime[responseTime.length-1].y  > 0 ){
+            
+        //     responseTime.push({ label: (responseTime[responseTime.length-1].y -1).toString(), y: responseTime[responseTime.length-1].y - 1})
+        // }
+        if (departureTime2.length < timer){
+            departureTime2.push({ label: timer.toString(), y: 0})
+        }
+        timer += 1;
+        time2.push({label: timer.toString(), y: timer})
+        splinechart2.options.data[0].dataPoints = waitingTimes2;
+        splinechart2.options.data[1].dataPoints = departureTime2;
+        splinechart2.options.data[2].dataPoints = responseTime2;
+        splinechart2.options.data[3].dataPoints = time2;
+        splinechart2.options.data[4].dataPoints = waitingTimes22;
+        splinechart2.render();
+    }
+    console.log("Time unutilized with Two servers: " + timeUnutilized);
+}
+
+var departureTime2 = [{ label: "0", y: 0 }];
+var waitingTimes2 = [{ label: "0", y: 0 }];
+
+var arrivalTime = [12, 31, 63, 95, 99, 154, 198, 221, 304, 346, 411, 455, 537];
+var serviceTime = [40, 32, 55, 48, 18, 50, 47, 18, 28, 54, 40, 72, 12];
+serveCustomer2(arrivalTime, serviceTime, waitingTimes2, waitingTimes22, responseTime2, departureTime2, time2)
+
+
 
 
 var hist = new CanvasJS.Chart("histDiv", {
@@ -309,9 +535,66 @@ var hist = new CanvasJS.Chart("histDiv", {
 });
 hist.render();
 
+var isBarPlot = 1;
+//change simulation plotter
+var simulatedPlotter = document.getElementById("choosePlotter");
+simulatedPlotter.onclick = function(){
+    if (isBarPlot === 1){
+        isBarPlot = 2;
+        
+        var simulatedPlotter = document.getElementById("choosePlotter");
+        simulatedPlotter.innerHTML = "2 Server Queuing Simulation";
+
+        document.getElementById("splineDiv").style.display = 'block';    //show
+        document.getElementById("mainText2").style.display = 'block';    //show
+        
+
+        document.getElementById("histDiv").style.display = 'none';    //hide
+        document.getElementById("splineDiv2").style.display = 'none';    //hide
+        document.getElementById("mainText1").style.display = 'none';    //hide
+        document.getElementById("mainText3").style.display = 'none';    //hide
+        splinechart = splinechart;
+        splinechart.render();
+    }
+    else if (isBarPlot === 2){
+        isBarPlot = 3;
+        
+        var simulatedPlotter = document.getElementById("choosePlotter");
+        simulatedPlotter.innerHTML = "Back to Histogram of Bins";
+
+        document.getElementById("splineDiv2").style.display = 'block';    //show
+        document.getElementById("mainText3").style.display = 'block';    //show
+        
+
+        document.getElementById("histDiv").style.display = 'none';    //hide
+        document.getElementById("splineDiv").style.display = 'none';    //hide
+        document.getElementById("mainText1").style.display = 'none';    //hide
+        document.getElementById("mainText2").style.display = 'none';    //hide
+        splinechart = splinechart;
+        splinechart2.render();
+    }
+    else{
+        isBarPlot = 1;
+        var simulatedPlotter = document.getElementById("choosePlotter");
+        simulatedPlotter.innerHTML = "Back to 1 Server Queueing Simulation";
+
+        document.getElementById("histDiv").style.display = 'block';    //show
+        document.getElementById("mainText1").style.display = 'block';    //show
+
+        document.getElementById("splineDiv").style.display = 'none';    //hide
+        document.getElementById("splineDiv2").style.display = 'none';    //hide
+        document.getElementById("mainText2").style.display = 'none';    //hide
+        document.getElementById("mainText3").style.display = 'none';    //hide
+        barchart = barchart;
+        hist.render();
+    }
+}
 
 
 // #endregion
 
 //load the html generated in this js file when the page loads
 document.onload = mapDataToBins(generatedData);
+document.getElementById("mainText1").style.display = 'block';    //show
+document.getElementById("mainText2").style.display = 'none';    //show
+document.getElementById("mainText3").style.display = 'none';    //show
