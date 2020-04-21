@@ -19,7 +19,6 @@ var floorToFloor = {
 }
 
 
-
 class Ryder{
     constructor(id, source, destination, stairChance, arrivalTime){
         this.id = id ? id : -1;
@@ -178,10 +177,41 @@ function checkStop(waitingToExit, location){
     }
 }
 
+// roll for the chance to take the stairs
+function rollForStairs(chance){
+    var roll = Math.random();
+    if (1.0 - chance > roll){
+        return false;
+    }
+    else{
+        return true;
+    }
+}
+
+// compute the times for someone who will walk 
+function walkToFloor(){
+
+}
+
+function determineIfWalking(peopleWaitingOnElevator, tolerenceToWait, ryder){
+    if (peopleWaitingOnElevator.length > tolerenceToWait){  // if there are too many people waiting then consider walking
+        var isWalking = rollForStairs(ryder.stairChance);
+        if (isWalking === false){
+            peopleWaitingOnElevator.push(ryder);
+        }
+        else{
+            //walk to your floor 
+            //calculate walking time
+            walkToFloor();
+        }
+    }
+}
+
+
 function elevatorSimulation(){
 
     var time = "8:00:00";
-    var capacity = 12;
+    var capacity = 12;  // both the elevator capacity and the number of people to wait before walking
     var elevatorLocation = 0;
     var waitingToBoard = [];
     var waitingToExit = [];
@@ -191,7 +221,7 @@ function elevatorSimulation(){
     var ryders = createRyders();
     ryders = ryders.slice(0, 10)
     
-    while(waitingToBoard.length > 0 && ryder.length > 0){
+    while(waitingToBoard.length > 0 || ryder.length > 0){
         var ryder = ryders.shift()  // get a worker
         while (time != ryder.arrivalTime){  // every second wait for someone to arrive
             // increment time
@@ -200,15 +230,24 @@ function elevatorSimulation(){
         }
 
         if (elevatorLocation === ryder.source){ // if worker is on the same floor as elevator
-            if (waitingToExit.length < capacity){   // if # of people in elevator is less then capacity board elevator
+            if (waitingToExit.length <= capacity){   // if # of people in elevator is less then capacity board elevator
                 waitingToExit.push(ryder);
             }
-            else{
+            else{   // consider either: waiting for the elevator or walking
+                if (waitingToBoard.length > capacity){  // if there are too many people waiting then consider walking
+                    var isWalking = rollForStairs(ryder.stairChance)
+                    if (isWalking === false){
+
+                    }
+                    else{
+                        //walk to your floor
+                    }
+                }
                 waitingToBoard.push(ryder);
             }
             
         }
-        else{
+        else{   // how should you know there are people waiting on other floors?
             waitingToBoard.push(ryder);
         }
         
@@ -223,6 +262,9 @@ function elevatorSimulation(){
     }
 
 }
+
+v = Math.random()
+v
 
 var waitTimes = [];
 var walkedTo2 = [];
