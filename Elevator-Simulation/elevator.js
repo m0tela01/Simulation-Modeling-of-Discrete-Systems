@@ -116,8 +116,6 @@ function createRyders(){
         previousTime = arrivalTime;
         currentTime
 
-
-
         ryders.push(new Ryder(i, source, destination, stairChance, arrivalTime));
     }
 
@@ -151,6 +149,8 @@ function getExitTime(time, previousTime, arrivalTime){
 
 // process workers in elevator at a given time
 function rideElevator(location, time, waitingToBoard, waitingToExit){
+    var floorToStopAt = waitingToExit[0].destination;   // we will pick the first person to board as the initial destination
+
     var check = checkStop(waitingToExit, location);
     var shouldStop = check[0];
     var gettingOff = check[1];
@@ -188,21 +188,53 @@ function rollForStairs(chance){
     }
 }
 
+
+function getTimeAtLine(ryder, time){
+    if (time[0] === '8' && time[2] === '3' && time[3] === '0'){
+        workersAt830.push(ryder.id);
+    }
+    if (time[0] === '8' && time[2] === '4' && time[3] === '5'){
+        workersAt845.push(ryder.id);
+    }
+
+    if (time[0] === '9' && time[2] === '0' && time[3] === '0'){
+        workersAt9.push(ryder.id);
+    }
+    // var currentTime = ensureTime(time);
+    //time = getArrivalTime(currentTime, 1, index=6);
+}
+
 // compute the times for someone who will walk 
-function walkToFloor(){
+function walkToFloor(ryder, time){
+    // I will say that it takes 2 minutes per floor to walk
+    var floorsToWalk = ryder.destination - ryder.source;
+    waitTimes.push(0);  // if you walk you don't wait for the elevator
+    
+    if (ryder.destination === 2){   // for whatever floor you walk to add one
+        walkedTo2.push(ryder.id);
+    }
+    else if (ryder.destination === 3){
+        walkedTo3.push(ryder.id);
+    }
+    else{
+        walkedTo4.push(ryder.id);
+    }
+    getTimeAtLine(ryder, time);
 
 }
 
-function determineIfWalking(peopleWaitingOnElevator, tolerenceToWait, ryder){
+// there is no specification for how long it should take someone to walk the stairs
+// this means we do not need to calculate their times for travel but we need to store
+// the data that is relevant
+function determineIfWalking(peopleWaitingOnElevator, tolerenceToWait, ryder, time){
     if (peopleWaitingOnElevator.length > tolerenceToWait){  // if there are too many people waiting then consider walking
         var isWalking = rollForStairs(ryder.stairChance);
         if (isWalking === false){
             peopleWaitingOnElevator.push(ryder);
         }
         else{
-            //walk to your floor 
-            //calculate walking time
-            walkToFloor();
+            //walk to your floor
+            walkToFloor(ryder, time);
         }
     }
 }
@@ -221,12 +253,18 @@ function elevatorSimulation(){
     var ryders = createRyders();
     ryders = ryders.slice(0, 10)
     
-    while(waitingToBoard.length > 0 || ryder.length > 0){
+    while(waitingToBoard.length > 0 || ryder.length > 0 || waitingToExit.length > 0){
         var ryder = ryders.shift()  // get a worker
         while (time != ryder.arrivalTime){  // every second wait for someone to arrive
-            // increment time
+            // increment time: index=6 is seconds
             var currentTime = ensureTime(time);
             time = getArrivalTime(currentTime, 1, index=6);
+            if (waitingToExit.length > 0){
+                var ride = rideElevator(elevatorLocation, time, waitingToBoard, waitingToExit);
+                waitingToBoard = ride[0];
+                waitingToExit = ride[1];
+                time = ride[2]
+            }
         }
 
         if (elevatorLocation === ryder.source){ // if worker is on the same floor as elevator
@@ -234,16 +272,7 @@ function elevatorSimulation(){
                 waitingToExit.push(ryder);
             }
             else{   // consider either: waiting for the elevator or walking
-                if (waitingToBoard.length > capacity){  // if there are too many people waiting then consider walking
-                    var isWalking = rollForStairs(ryder.stairChance)
-                    if (isWalking === false){
-
-                    }
-                    else{
-                        //walk to your floor
-                    }
-                }
-                waitingToBoard.push(ryder);
+                determineIfWalking(waitingToBoard, capacity, ryder, time)
             }
             
         }
@@ -256,15 +285,13 @@ function elevatorSimulation(){
         waitingToExit = ride[1];
         time = ride[2]
 
-        // increment time
+        // increment time: index=6 is seconds
         var currentTime = ensureTime(time);
         time = getArrivalTime(currentTime, 1, index=6);
     }
 
 }
 
-v = Math.random()
-v
 
 var waitTimes = [];
 var walkedTo2 = [];
