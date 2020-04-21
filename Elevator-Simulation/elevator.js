@@ -182,6 +182,42 @@ function mapFloorToFloorTime(ryder){
 }
 
 
+function exitElevator(waitingToBoard, waitingToExit){
+    var firstInLine = waitingToExit[0];
+    var destination = firstInLine.destination;
+
+    // dequeue people from the elevator to the desintation floor
+    for (var i = 0; i < waitingToExit.length; i++){
+        if (waitingToExit[i].destination === firstInLine.destination){
+            var worker = waitingToExit[i].shift();
+        }
+    }
+
+    // enque people waiting on floor to the elevator
+    for (var i = 0; i < waitingToBoard.length; i++){
+        if (waitingToBoard[i].source === firstInLine.destination){
+            var worker = waitingToBoard[i].shift();
+            waitingToExit.push(worker)
+        }
+    }
+}
+
+function moveTimeAndProcessArrivals(ryder, location, waitingToExit, waitingToBoard, capacity, time, indexT){
+    var currentTime = ensureTime(time);
+    time = getArrivalTime(currentTime, 1, index=indexT);
+    
+    // if there are people in line check if they are in line at the time
+    if (waitingToBoard.length > 0){
+        getTimeAtLine(waitingToBoard, time)
+    }
+    
+    if (time === ryders[0].arrivalTime){
+        // we know that if the time changes someone might arrive
+        var ryder = ryders.shift()  // get a worker
+        processRyderArrival(ryder, location, waitingToExit, waitingToBoard, capacity, time)
+    }
+}
+
 // process workers in elevator at a given time
 function rideElevator(location, time, waitingToBoard, waitingToExit, elevatorIsBusy, ryders, capacity){
     // loop through each floor
@@ -195,32 +231,46 @@ function rideElevator(location, time, waitingToBoard, waitingToExit, elevatorIsB
     
         if (shouldStop === true){   // if there are people getting off
 
-            //ride the elevator based on the time from floorToFloor and for each time interval
-            // check and see if someone has arrived if so process their arrival
+            // get them and remove them from the elevator. then add people who are waiting on that floor
+            // to the elevator. should store wait times and check if they are in line at time
+            exitElevator(waitingToBoard, waitingToExit);
+
+            // ride the elevator based on the time from floorToFloor and for each time interval
+            // then check and see if someone has arrived if so process their arrival
             var rideTime = mapFloorToFloorTime(firstInLine)
             for (var i = 0; i < rideTime; i++){
-                var currentTime = ensureTime(time);
-                time = getArrivalTime(currentTime, 1);
-
-                if (time === ryders[0].arrivalTime){
-                    // we know that if the elevator travels at least two people will arrive
-                    var ryder = ryders.shift()  // get a worker
-                    processRyderArrival(ryder, location, waitingToExit, waitingToBoard, capacity, time)
-                }
+                moveTimeAndProcessArrivals(ryder, location, waitingToExit, waitingToBoard, capacity, time, 6);
+                // var currentTime = ensureTime(time);
+                // time = getArrivalTime(currentTime, 1, index=6);
+                
+                // // if there are people in line check if they are in line at the time
+                // if (waitingToBoard.length > 0){
+                //     getTimeAtLine(waitingToBoard, time)
+                // }
+                
+                // if (time === ryders[0].arrivalTime){
+                //     // we know that if the elevator travels at least two people will arrive
+                //     var ryder = ryders.shift()  // get a worker
+                //     processRyderArrival(ryder, location, waitingToExit, waitingToBoard, capacity, time)
+                // }
             }
 
-            var ryder = ryders.shift()  // get a worker
-            processRyderArrival(ryder, location, waitingToExit, waitingToBoard, capacity, time)
-    
-            for (var i = 0; i < 3; i ++){   // if the elevator stops we should wait half a minute no matter what
-                var currentTime = ensureTime(time);
-                time = getArrivalTime(currentTime, 1);
+            // if the elevator stops we should wait half a minute no matter what
+            for (var i = 0; i < 3; i ++){
+                moveTimeAndProcessArrivals(ryder, location, waitingToExit, waitingToBoard, capacity, time, 5);
+                // var currentTime = ensureTime(time);
+                // time = getArrivalTime(currentTime, 1);
 
-                if (time === ryders[0].arrivalTime){
-                    // we know that in thirty seconds three people should arrive at the elevator
-                    var ryder = ryders.shift()  // get a worker
-                    processRyderArrival(ryder, location, waitingToExit, waitingToBoard, capacity, time)
-                }
+                // // if there are people in line check if they are in line at the time
+                // if (waitingToBoard.length > 0){
+                //     getTimeAtLine(waitingToBoard, time)
+                // }
+
+                // if (time === ryders[0].arrivalTime){
+                //     // we know that in thirty seconds three people should arrive at the elevator
+                //     var ryder = ryders.shift()  // get a worker
+                //     processRyderArrival(ryder, location, waitingToExit, waitingToBoard, capacity, time)
+                // }
             }
         }
     }
@@ -251,17 +301,18 @@ function rollForStairs(chance){
     }
 }
 
-
-function getTimeAtLine(ryder, time){
-    if (time[0] === '8' && time[2] === '3' && time[3] === '0'){
-        workersAt830.push(ryder.id);
-    }
-    if (time[0] === '8' && time[2] === '4' && time[3] === '5'){
-        workersAt845.push(ryder.id);
-    }
-
-    if (time[0] === '9' && time[2] === '0' && time[3] === '0'){
-        workersAt9.push(ryder.id);
+// append data for visualization and metrics about elevator
+function getTimeAtLine(arrRyder, time){
+    for (var i = 0; i < arrRyder.length; i++){
+        if (time[0] === '8' && time[2] === '3' && time[3] === '0'){
+            workersAt830.push(arrRyder[i].id);
+        }
+        if (time[0] === '8' && time[2] === '4' && time[3] === '5'){
+            workersAt845.push(arrRyder[i].id);
+        }
+        if (time[0] === '9' && time[2] === '0' && time[3] === '0'){
+            workersAt9.push(arrRyder[i].id);
+        }
     }
     // var currentTime = ensureTime(time);
     //time = getArrivalTime(currentTime, 1, index=6);
@@ -282,7 +333,8 @@ function walkToFloor(ryder, time){
     else{
         walkedTo4.push(ryder.id);
     }
-    getTimeAtLine(ryder, time);
+    var arr = [ryder]
+    getTimeAtLine(arr, time);
 
 }
 
@@ -339,7 +391,7 @@ function elevatorSimulation(){
             // increment time: index=6 is seconds
             var currentTime = ensureTime(time);
             time = getArrivalTime(currentTime, 1, index=6);
-            if (waitingToExit.length > 0 && elevatorIsBusy == false){
+            if (waitingToExit.length > 0){// && elevatorIsBusy == false){
                 var ride = rideElevator(elevatorLocation, time, waitingToBoard, waitingToExit, elevatorIsBusy, ryders, capacity);
                 waitingToBoard = ride[0];
                 waitingToExit = ride[1];
@@ -363,6 +415,14 @@ function elevatorSimulation(){
         var currentTime = ensureTime(time);
         time = getArrivalTime(currentTime, 1, index=6);
     }
+
+    walkedTo2 = [...new Set(walkedTo2)];
+    walkedTo3 = [...new Set(walkedTo3)];
+    walkedTo4 = [...new Set(walkedTo4)];
+
+    workersAt830 = [...new Set(workersAt830)];
+    workersAt845 = [...new Set(workersAt845)];
+    workersAworkersAt9t830 = [...new Set(workersAt9)];
 }
 
 
