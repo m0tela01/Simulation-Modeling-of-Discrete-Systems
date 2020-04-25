@@ -601,6 +601,14 @@ function elevatorSimulation(){
                     time = currentTime;
                 }
     
+                // if (waitingToExit.length > 0){// && elevatorIsBusy == false){
+                //     var ride = rideElevator(elevatorLocation, time, waitingToBoard, waitingToExit, elevatorIsBusy, ryders, capacity);
+                //     waitingToBoard = ride[0];
+                //     waitingToExit = ride[1];
+                //     time = ride[2];
+                //     elevatorIsBusy = ride[3];
+                // }
+    
             }
         }
         
@@ -623,6 +631,17 @@ function elevatorSimulation(){
             location = ride[4];
             elevatorIsBusy = ride[5];
         }
+        // increment time: index=6 is seconds
+        // var eT = ensureTime(time);
+        // var currentTime = eT[0];
+        // var update = eT[1];
+        // if (update === true){
+        //     time = getArrivalTime(currentTime, 1, index=6);
+        // }
+        // else{
+        //     time = currentTime;
+        // }
+        // console.log("a")
     }
 
     // use this at the end not while testing
