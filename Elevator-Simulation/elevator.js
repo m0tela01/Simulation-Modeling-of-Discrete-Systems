@@ -299,9 +299,9 @@ function exitElevator(waitingToBoard, waitingToExit, time, location){
     return [waitingToBoard, waitingToExit, time]
 }
 
+// manage time by mapping seconds to clock time using "8:00:00" as the standard format
+// update the time and get inter arrivals 
 function moveTimeAndProcessArrivals(ryders, location, waitingToExit, waitingToBoard, capacity, time, indexT, isBusy){
-
-
     var eT = ensureTime(time);
     var currentTime = eT[0];
     var update = eT[1];
@@ -579,13 +579,13 @@ function elevatorSimulation(){
     var elevatorIsBusy = false;
     var finalWorker = new Ryder(-1, 0, 0, 0, "",)
 
-
+    // create some elevator riders
     var ryders = createRyders();
-    // ryders = ryders.slice(0, 150)
 
 
     time = "8:00:00";
     
+    // while there are workers that need a ride
     while( ryders.length > 0 ){//waitingToBoard.length > 0 || ryders.length > 0 || waitingToExit.length > 0){
         if (ryders.length > 0){
             var ryder = ryders.shift()  // get a worker
@@ -600,7 +600,6 @@ function elevatorSimulation(){
                 else{
                     time = currentTime;
                 }
-    
             }
         }
         
@@ -613,7 +612,7 @@ function elevatorSimulation(){
         ryders = pra[4];
         elevatorIsBusy = pra[5];
         
-    
+        // perform elevator riding
         if (waitingToExit.length > 0 && elevatorIsBusy == false){
             var ride = rideElevator(elevatorLocation, time, waitingToBoard, waitingToExit, elevatorIsBusy, ryders, capacity);
             waitingToBoard = ride[0];
@@ -627,13 +626,13 @@ function elevatorSimulation(){
 
     // use this at the end not while testing
     // should update the matrices after to fit plotting function after making sets
-    // walkedTo2 = [...new Set(walkedTo2)];
-    // walkedTo3 = [...new Set(walkedTo3)];
-    // walkedTo4 = [...new Set(walkedTo4)];
+    walkedTo2 = [...new Set(walkedTo2)];
+    walkedTo3 = [...new Set(walkedTo3)];
+    walkedTo4 = [...new Set(walkedTo4)];
 
-    // workersAt830 = [...new Set(workersAt830)];
-    // workersAt845 = [...new Set(workersAt845)];
-    // workersAworkersAt9t830 = [...new Set(workersAt9)];
+    workersAt830 = [...new Set(workersAt830)];
+    workersAt845 = [...new Set(workersAt845)];
+    workersAworkersAt9t830 = [...new Set(workersAt9)];
     console.log("waitTimes: " + waitTimes.length)
     console.log("workersAt830: " + workersAt830.length)
     console.log("workersAt845: " + workersAt845.length)
@@ -646,3 +645,39 @@ a
 
 
 elevatorSimulation()
+a = waitTimes.length
+a
+b = workersAt830.length
+b
+c = workersAt845.length
+c
+d = workersAt9.length
+d
+
+
+var total = 0;
+for(var i = 0; i < waitTimes.length; i++) {
+    total += waitTimes[i];
+}
+var avgWait = total / waitTimes.length;
+avgWait
+
+walkedTo2
+walkedTo3
+walkedTo4
+
+e = walkedTo2.length
+e
+f = walkedTo3.length
+f
+g = walkedTo4.length
+f
+
+
+
+
+
+
+
+
+
